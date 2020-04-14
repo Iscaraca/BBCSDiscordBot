@@ -20,7 +20,20 @@ client.on('message', (receivedMessage) => {
         return
     }
     
-    if (receivedMessage.content.startsWith("&")) {
+    if (receivedMessage.channel.id == '698868628459749407') { // Does a linear search on all messages in verification channel
+        let n = receivedMessage.content.indexOf('&') // Get index of &
+        if (n == -1) { // Case where & is not found
+            return
+        }
+        else {
+            if (receivedMessage.content.slice(n+1, n+8)=="confirm") { // Looks at the 7 characters after the & to see if they are "confirm"
+                confirmCommand(receivedMessage)
+            }
+            else {
+                return
+            }
+        }
+    } else if (receivedMessage.content.startsWith("&")) {
         processCommand(receivedMessage)
     }
 })
@@ -33,8 +46,6 @@ function processCommand(receivedMessage) {
 
     if (primaryCommand == "help") {
         helpCommand(arguments, receivedMessage)
-    } else if (primaryCommand == "confirm") {
-        confirmCommand(arguments, receivedMessage)
     } else if (primaryCommand == "test") {
         testCommand(arguments, receivedMessage)
     } else if (primaryCommand == "committees") {
@@ -109,7 +120,7 @@ function commCommand(arguments, receivedMessage) {
     }
 }
 
-function confirmCommand(arguments, receivedMessage) {
+function confirmCommand(receivedMessage) {
     receivedMessage.member.roles.remove('698841628856811601')
     receivedMessage.author.send("Thank you <@"+receivedMessage.author.id+">! You can now access the other channels.")
 }
